@@ -8,7 +8,7 @@ public class StringCalculatorStep9 implements Calculator {
     private static final String COMMA = ",";
     private static final String SPACE = " ";
     private static final String NON_DIGITS = "\\D++";
-    private static final String NEGATIVE_NUMBER = ".*?(-\\d++).*";
+    private static final String NEGATIVE_NUMBER = ".*?-\\d++.*";
 
 
     // STEP 9
@@ -22,13 +22,19 @@ public class StringCalculatorStep9 implements Calculator {
         if (numbers.matches(NEGATIVE_NUMBER)) {
             StringBuilder builder = new StringBuilder("error: negatives not allowed: ");
 
-            for (String number : numbers.split(COMMA)) {
-                int num = Integer.parseInt(number);
+            final String[] numbersArray = numbers.split(COMMA);
+            String negativeNumber;
+            for (int idx = 0, arrLength = numbersArray.length; idx < arrLength; idx++) {
 
-                if (num < 0) {
-                    builder.append(num).append(SPACE);
+                if ((negativeNumber = numbersArray[idx]).matches(NEGATIVE_NUMBER)) {
+                    if (idx == arrLength - 1) {
+                        builder.append(negativeNumber);
+                    } else {
+                        builder.append(negativeNumber).append(SPACE);
+                    }
                 }
             }
+
             throw new NumberFormatException(builder.toString().trim());
         }
 
@@ -37,11 +43,11 @@ public class StringCalculatorStep9 implements Calculator {
                 .split(SPACE);
 
         int result = 0;
-        for (String number : numbersArray) {
-            int parsedInt;
-            result += (parsedInt = Integer.parseInt(number)) > 1000
-                    ? 0
-                    : parsedInt;
+        for (int parsedInt, idx = 0; idx < numbersArray.length; idx++) {
+
+            if ((parsedInt = Integer.parseInt(numbersArray[idx])) <= 1000) {
+                result += parsedInt;
+            }
         }
 
         return result;

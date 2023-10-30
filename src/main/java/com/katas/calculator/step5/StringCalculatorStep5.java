@@ -8,52 +8,10 @@ public class StringCalculatorStep5 implements Calculator {
     private static final String COMMA = ",";
     private static final String SPACE = " ";
     private static final String NON_DIGITS = "\\D++";
-    private static final String NEGATIVE_NUMBER = ".*?(-\\d++).*";
+    private static final String NEGATIVE_NUMBER = ".*?-\\d++.*";
 
 
-    // STEP 5 - V1
-//    @Override
-//    public int add(final String numbers) throws NumberFormatException {
-//
-//        if (numbers.isEmpty()) {
-//            return ZERO;
-//        }
-//
-//        String rgx = ".*?(-\\d++).*";
-//        if (numbers.matches(rgx)) {
-//            throw new NumberFormatException(throwExceptionWithNegativeNumbers(numbers, rgx).toString());
-//        }
-//
-//        final String[] numbersArray = numbers.replaceAll("\\D++", " ")
-//                .trim()
-//                .split(" ");
-//
-//        int result = 0;
-//        for (String number : numbersArray) {
-//            result += Integer.parseInt(number);
-//        }
-//
-//        return result;
-//    }
-//
-//    private static StringBuilder throwExceptionWithNegativeNumbers(final String numbers, final String rgx) {
-//        String str = numbers;
-//        StringBuilder stringBuilder = new StringBuilder("error: negatives not allowed: ");
-//
-//        do {
-//            String negativeNumber = str.replaceFirst(rgx, "$1");
-//            stringBuilder.append(negativeNumber);
-//
-//            boolean stillHasNegativeNumber = (str = str.replaceFirst(negativeNumber, "")).matches(rgx);
-//            if (stillHasNegativeNumber) {
-//                stringBuilder.append(' ');
-//            }
-//        } while (str.matches(rgx));
-//
-//        return stringBuilder;
-//    }
-
-    // STEP 5 - V2
+    // STEP 5
     @Override
     public int add(final String numbers) throws NumberFormatException {
 
@@ -64,13 +22,19 @@ public class StringCalculatorStep5 implements Calculator {
         if (numbers.matches(NEGATIVE_NUMBER)) {
             StringBuilder builder = new StringBuilder("error: negatives not allowed: ");
 
-            for (String number : numbers.split(COMMA)) {
-                int num = Integer.parseInt(number);
+            final String[] numbersArray = numbers.split(COMMA);
+            String negativeNumber;
+            for (int idx = 0, arrLength = numbersArray.length; idx < arrLength; idx++) {
 
-                if (num < 0) {
-                    builder.append(num).append(SPACE);
+                if ((negativeNumber = numbersArray[idx]).matches(NEGATIVE_NUMBER)) {
+                    if (idx == arrLength - 1) {
+                        builder.append(negativeNumber);
+                    } else {
+                        builder.append(negativeNumber).append(SPACE);
+                    }
                 }
             }
+
             throw new NumberFormatException(builder.toString().trim());
         }
 
